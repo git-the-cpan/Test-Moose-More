@@ -77,10 +77,10 @@
    "provides" : {
       "Test::Moose::More" : {
          "file" : "lib/Test/Moose/More.pm",
-         "version" : "0.025_02"
+         "version" : "0.026"
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/RsrchBoy/Test-Moose-More/issues"
@@ -92,7 +92,7 @@
          "web" : "https://github.com/RsrchBoy/Test-Moose-More"
       }
    },
-   "version" : "0.025_02",
+   "version" : "0.026",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.020001"
@@ -521,7 +521,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : "1",
-                  "tag" : "0.025_02",
+                  "tag" : "0.026",
                   "tag_format" : "%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"

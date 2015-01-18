@@ -34,7 +34,7 @@ no_index:
 provides:
   Test::Moose::More:
     file: lib/Test/Moose/More.pm
-    version: 0.025_02
+    version: '0.026'
 requires:
   Data::OptList: '0'
   Moose::Autobox: '0'
@@ -53,7 +53,7 @@ resources:
   bugtracker: https://github.com/RsrchBoy/Test-Moose-More/issues
   homepage: https://github.com/RsrchBoy/Test-Moose-More
   repository: https://github.com/RsrchBoy/Test-Moose-More.git
-version: 0.025_02
+version: '0.026'
 x_Dist_Zilla:
   perl:
     version: '5.020001'
@@ -384,7 +384,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: '1'
-          tag: 0.025_02
+          tag: '0.026'
           tag_format: '%v'
           tag_message: v%v
           time_zone: local
