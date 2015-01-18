@@ -8,11 +8,9 @@
 #   The GNU Lesser General Public License, Version 2.1, February 1999
 #
 package Test::Moose::More;
-BEGIN {
-  $Test::Moose::More::AUTHORITY = 'cpan:RSRCHBOY';
-}
-# git description: 0.025-10-gc99630d
-$Test::Moose::More::VERSION = '0.025_01';
+our $AUTHORITY = 'cpan:RSRCHBOY';
+# git description: 0.025_01-0-g41ca28b
+$Test::Moose::More::VERSION = '0.025_02';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -472,7 +470,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.025_01 of Test::Moose::More - released December 23, 2014 as part of Test-Moose-More.
+This document describes version 0.025_02 of Test::Moose::More - released January 18, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
