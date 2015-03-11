@@ -4,8 +4,8 @@ NAME
 
 VERSION
 
-    This document describes version 0.026 of Test::Moose::More - released
-    January 18, 2015 as part of Test-Moose-More.
+    This document describes version 0.027 of Test::Moose::More - released
+    March 10, 2015 as part of Test-Moose-More.
 
 SYNOPSIS
 
@@ -215,9 +215,7 @@ AUTHOR
     however, don't let that stop you if you feel like it ;)
 
     Flattr this
-    <https://flattr.com/submit/auto?user_id=RsrchBoy&url=https%3A%2F%2Fgith
-    ub.com%2FRsrchBoy%2FTest-Moose-More&title=RsrchBoy's%20CPAN%20Test-Moos
-    e-More&tags=%22RsrchBoy's%20Test-Moose-More%20in%20the%20CPAN%22>,
+    <https://flattr.com/submit/auto?user_id=RsrchBoy&url=https%3A%2F%2Fgithub.com%2FRsrchBoy%2FTest-Moose-More&title=RsrchBoy's%20CPAN%20Test-Moose-More&tags=%22RsrchBoy's%20Test-Moose-More%20in%20the%20CPAN%22>,
     gittip me <https://www.gittip.com/RsrchBoy/>, or indulge my Amazon
     Wishlist <http://bit.ly/rsrchboys-wishlist>... If you so desire.
 

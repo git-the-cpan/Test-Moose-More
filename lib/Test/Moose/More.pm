@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.025_02-0-g87466c0
-$Test::Moose::More::VERSION = '0.026';
+# git description: 0.026-2-gb52bf34
+$Test::Moose::More::VERSION = '0.027';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -39,7 +39,6 @@ use Test::More;
 use Test::Moose 'with_immutable';
 use Scalar::Util 'blessed';
 use Syntax::Keyword::Junction 'any';
-use Moose::Autobox;
 use Moose::Util 'does_role', 'find_meta';
 use Moose::Util::TypeConstraints;
 use Data::OptList;
@@ -470,7 +469,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.026 of Test::Moose::More - released January 18, 2015 as part of Test-Moose-More.
+This document describes version 0.027 of Test::Moose::More - released March 10, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
