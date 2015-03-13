@@ -4,8 +4,8 @@ NAME
 
 VERSION
 
-    This document describes version 0.027 of Test::Moose::More - released
-    March 10, 2015 as part of Test-Moose-More.
+    This document describes version 0.028 of Test::Moose::More - released
+    March 12, 2015 as part of Test-Moose-More.
 
 SYNOPSIS
 
@@ -72,6 +72,14 @@ TEST_FUNCTIONS
 
     Note that this really only makes sense if $thing is a role.
 
+ is_immutable_ok $thing
+
+    Passes if $thing is immutable.
+
+ is_not_immutable_ok $thing
+
+    Passes if $thing is not immutable; that is, is mutable.
+
  is_role $thing
 
     Passes if $thing's metaclass is a Moose::Meta::Role.
@@ -102,7 +110,7 @@ TEST_FUNCTIONS
 
     Runs a bunch of tests against the given $thing, as defined:
 
-        validate_class $thing => (
+        validate_thing $thing => (
     
             attributes => [ ... ],
             methods    => [ ... ],

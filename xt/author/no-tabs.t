@@ -19,6 +19,7 @@ my @files = (
     't/has_method_ok.t',
     't/is_anon.t',
     't/is_class.t',
+    't/is_immutable.t',
     't/is_not_anon.t',
     't/is_role.t',
     't/meta_ok.t',

@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.026-2-gb52bf34
-$Test::Moose::More::VERSION = '0.027';
+# git description: 0.027-4-g6f3776b
+$Test::Moose::More::VERSION = '0.028';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -19,16 +19,21 @@ use warnings;
 
 use Sub::Exporter -setup => {
     exports => [ qw{
-        is_role is_class
-        is_anon is_not_anon
-        has_method_ok
-        requires_method_ok
-        check_sugar_ok check_sugar_removed_ok
-        has_attribute_ok
         attribute_options_ok
+        check_sugar_ok
+        check_sugar_removed_ok
+        has_attribute_ok
+        has_method_ok
+        is_anon
+        is_class
+        is_immutable_ok
+        is_not_anon
+        is_not_immutable_ok
+        is_role
+        meta_ok does_ok does_not_ok
+        requires_method_ok
         validate_attribute
         validate_class validate_role
-        meta_ok does_ok does_not_ok
         with_immutable
     } ],
     groups  => { default => [ ':all' ] },
@@ -163,6 +168,27 @@ sub requires_method_ok {
 }
 
 
+sub is_immutable_ok {
+    my ($thing) = @_;
+
+    ### $thing
+    my $meta = find_meta($thing);
+    my $name = $meta->name;
+
+    return $tb->ok($meta->is_immutable, "$name is immutable");
+}
+
+sub is_not_immutable_ok {
+    my ($thing) = @_;
+
+    ### $thing
+    my $meta = find_meta($thing);
+    my $name = $meta->name;
+
+    return $tb->ok(!$meta->is_immutable, "$name is not immutable");
+}
+
+
 sub is_role  { unshift @_, 'Role';  goto \&_is_moosey }
 sub is_class { unshift @_, 'Class'; goto \&_is_moosey }
 
@@ -273,6 +299,12 @@ sub validate_class {
     my $name = ref $class || $class;
     do { ok($class->isa($_), "$name isa $_") for @{$args{isa}} }
         if exists $args{isa};
+
+    # check our mutability
+    do { is_immutable_ok $class }
+        if exists $args{immutable} && $args{immutable};
+    do { is_not_immutable_ok $class }
+        if exists $args{immutable} && !$args{immutable};
 
     return validate_thing $class => %args;
 }
@@ -469,7 +501,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.027 of Test::Moose::More - released March 10, 2015 as part of Test-Moose-More.
+This document describes version 0.028 of Test::Moose::More - released March 12, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
@@ -532,6 +564,14 @@ Queries $thing's metaclass to see if $thing requires the methods named in
 
 Note that this really only makes sense if $thing is a role.
 
+=head2 is_immutable_ok $thing
+
+Passes if $thing is immutable.
+
+=head2 is_not_immutable_ok $thing
+
+Passes if $thing is not immutable; that is, is mutable.
+
 =head2 is_role $thing
 
 Passes if $thing's metaclass is a L<Moose::Meta::Role>.
@@ -561,7 +601,7 @@ Checks and makes sure a class/etc can still do all the standard Moose sugar.
 
 Runs a bunch of tests against the given C<$thing>, as defined:
 
-    validate_class $thing => (
+    validate_thing $thing => (
 
         attributes => [ ... ],
         methods    => [ ... ],
