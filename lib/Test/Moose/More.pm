@@ -9,32 +9,40 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.027-4-g6f3776b
-$Test::Moose::More::VERSION = '0.028';
+# git description: 0.028-7-gc0ca682
+$Test::Moose::More::VERSION = '0.028_01';
 
 # ABSTRACT: More tools for testing Moose packages
 
 use strict;
 use warnings;
 
-use Sub::Exporter -setup => {
+use Sub::Exporter::Progressive -setup => {
     exports => [ qw{
         attribute_options_ok
         check_sugar_ok
         check_sugar_removed_ok
+        does_not_ok
+        does_ok
         has_attribute_ok
         has_method_ok
-        is_anon
-        is_class
+        is_anon_ok
+        is_class_ok
         is_immutable_ok
-        is_not_anon
+        is_not_anon_ok
         is_not_immutable_ok
-        is_role
-        meta_ok does_ok does_not_ok
+        is_role_ok
+        meta_ok
         requires_method_ok
         validate_attribute
-        validate_class validate_role
+        validate_class
+        validate_role
         with_immutable
+
+        is_anon
+        is_class
+        is_not_anon
+        is_role
     } ],
     groups  => { default => [ ':all' ] },
 };
@@ -189,10 +197,14 @@ sub is_not_immutable_ok {
 }
 
 
-sub is_role  { unshift @_, 'Role';  goto \&_is_moosey }
-sub is_class { unshift @_, 'Class'; goto \&_is_moosey }
+# NOTE: deprecate at some point late 2015
+sub is_role  { goto \&is_role_ok  }
+sub is_class { goto \&is_class_ok }
 
-sub _is_moosey {
+sub is_role_ok  { unshift @_, 'Role';  goto \&_is_moosey_ok }
+sub is_class_ok { unshift @_, 'Class'; goto \&_is_moosey_ok }
+
+sub _is_moosey_ok {
     my ($type, $thing) =  @_;
 
     my $thing_name = ref $thing || $thing;
@@ -205,7 +217,11 @@ sub _is_moosey {
 }
 
 
-sub is_anon {
+# NOTE: deprecate at some point late 2015
+sub is_anon     { goto \&is_anon_ok     }
+sub is_not_anon { goto \&is_not_anon_ok }
+
+sub is_anon_ok {
     my ($thing, $message) = @_;
 
     my $thing_meta = find_meta($thing);
@@ -214,7 +230,7 @@ sub is_anon {
     return $tb->ok(!!$thing_meta->is_anon, $message);
 }
 
-sub is_not_anon {
+sub is_not_anon_ok {
     my ($thing, $message) = @_;
 
     my $thing_meta = find_meta($thing);
@@ -253,7 +269,7 @@ sub validate_thing {
     local $Test::Builder::Level = $Test::Builder::Level + 1;
 
     ### anonymous...
-    $args{anonymous} ? is_anon $thing : is_not_anon $thing
+    $args{anonymous} ? is_anon_ok $thing : is_not_anon_ok $thing
         if exists $args{anonymous};
 
     ### roles...
@@ -294,7 +310,7 @@ sub validate_class {
     my ($class, %args) = @_;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
-    return unless is_class $class;
+    return unless is_class_ok $class;
 
     my $name = ref $class || $class;
     do { ok($class->isa($_), "$name isa $_") for @{$args{isa}} }
@@ -313,7 +329,7 @@ sub validate_role {
     my ($role, %args) = @_;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
-    return unless is_role $role;
+    return unless is_role_ok $role;
 
     requires_method_ok($role => @{ $args{required_methods} })
         if defined $args{required_methods};
@@ -501,14 +517,14 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.028 of Test::Moose::More - released March 12, 2015 as part of Test-Moose-More.
+This document describes version 0.028_01 of Test::Moose::More - released March 14, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
     use Test::Moose::More;
 
-    is_class 'Some::Class';
-    is_role  'Some::Role';
+    is_class_ok 'Some::Class';
+    is_role_ok  'Some::Role';
     has_method_ok 'Some::Class', 'foo';
 
     # ... etc
@@ -572,19 +588,19 @@ Passes if $thing is immutable.
 
 Passes if $thing is not immutable; that is, is mutable.
 
-=head2 is_role $thing
+=head2 is_role_ok $thing
 
 Passes if $thing's metaclass is a L<Moose::Meta::Role>.
 
-=head2 is_class $thing
+=head2 is_class_ok $thing
 
 Passes if $thing's metaclass is a L<Moose::Meta::Class>.
 
-=head2 is_anon $thing
+=head2 is_anon_ok $thing
 
 Passes if $thing is "anonymous".
 
-=head2 is_not_anon $thing
+=head2 is_not_anon_ok $thing
 
 Passes if $thing is not "anonymous".
 
@@ -617,6 +633,20 @@ Runs a bunch of tests against the given C<$thing>, as defined:
 C<$thing> can be the name of a role or class, an object instance, or a
 metaclass.
 
+The attributes list specified here is in the form of a list of names, each optionally
+followed by a hashref of options to test the attribute for; this hashref takes the
+same arguments L</validate_attribute> does.  e.g.:
+
+    validate_thing $thing => (
+
+        attributes => [
+            'foo',
+            'bar',
+            baz => { is => 'ro', ... },
+            'bip',
+        ],
+    );
+
 =head2 validate_role
 
 The same as validate_thing(), but ensures C<$thing> is a role, and allows for
@@ -627,11 +657,29 @@ additional role-specific tests.
         required_methods => [ ... ],
 
         # ...and all other options from validate_thing()
+    );
 
 =head2 validate_class
 
 The same as validate_thing(), but ensures C<$thing> is a class, and allows for
 additional class-specific tests.
+
+    validate_thing $thing => (
+
+        isa  => [ ... ],
+
+        attributes => [ ... ],
+        methods    => [ ... ],
+        isa        => [ ... ],
+
+        # ensures $thing does these roles
+        does       => [ ... ],
+
+        # ensures $thing does not do these roles
+        does_not   => [ ... ],
+
+        # ...and all other options from validate_thing()
+    );
 
 =head2 validate_attribute
 
@@ -652,8 +700,12 @@ You can use validate_attribute() to ensure that it's built out in the way you
 expect:
 
     validate_attribute TestClass => foo => (
+
+        # tests the attribute metaclass instance to ensure it does the roles
         -does => [ 'TestRole' ],
+        # tests the attribute metaclass instance's inheritance
         -isa  => [ 'Moose::Meta::Attribute' ], # for demonstration's sake
+
         traits   => [ 'TestRole' ],
         isa      => 'Int',
         does     => 'Bar',
@@ -665,6 +717,11 @@ expect:
         lazy     => 1,
         required => undef,
     );
+
+Options passed to validate_attribute() prefixed with '-' test the attribute's metaclass
+instance rather than a setting on the attribute; that is, '-does' ensures that the
+metaclass does a particular role (e.g. L<MooseX::AttributeShortcuts>), while 'does' tests
+the setting of the attribute to require the value do a given role.
 
 Not yet documented or tested exhaustively; please see t/validate_attribute.t
 for details at the moment.  This test routine is likely to change in

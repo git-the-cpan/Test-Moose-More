@@ -44,7 +44,7 @@
             "Moose::Util" : "0",
             "Moose::Util::TypeConstraints" : "0",
             "Scalar::Util" : "0",
-            "Sub::Exporter" : "0",
+            "Sub::Exporter::Progressive" : "0",
             "Syntax::Keyword::Junction" : "0",
             "Test::Builder" : "0",
             "Test::Moose" : "0",
@@ -76,10 +76,10 @@
    "provides" : {
       "Test::Moose::More" : {
          "file" : "lib/Test/Moose/More.pm",
-         "version" : "0.028"
+         "version" : "0.028_01"
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/RsrchBoy/Test-Moose-More/issues"
@@ -91,7 +91,7 @@
          "web" : "https://github.com/RsrchBoy/Test-Moose-More"
       }
    },
-   "version" : "0.028",
+   "version" : "0.028_01",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.020001"
@@ -526,7 +526,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : "1",
-                  "tag" : "0.028",
+                  "tag" : "0.028_01",
                   "tag_format" : "%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"

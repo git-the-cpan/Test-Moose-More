@@ -4,15 +4,15 @@ NAME
 
 VERSION
 
-    This document describes version 0.028 of Test::Moose::More - released
-    March 12, 2015 as part of Test-Moose-More.
+    This document describes version 0.028_01 of Test::Moose::More -
+    released March 14, 2015 as part of Test-Moose-More.
 
 SYNOPSIS
 
         use Test::Moose::More;
     
-        is_class 'Some::Class';
-        is_role  'Some::Role';
+        is_class_ok 'Some::Class';
+        is_role_ok  'Some::Role';
         has_method_ok 'Some::Class', 'foo';
     
         # ... etc
@@ -80,19 +80,19 @@ TEST_FUNCTIONS
 
     Passes if $thing is not immutable; that is, is mutable.
 
- is_role $thing
+ is_role_ok $thing
 
     Passes if $thing's metaclass is a Moose::Meta::Role.
 
- is_class $thing
+ is_class_ok $thing
 
     Passes if $thing's metaclass is a Moose::Meta::Class.
 
- is_anon $thing
+ is_anon_ok $thing
 
     Passes if $thing is "anonymous".
 
- is_not_anon $thing
+ is_not_anon_ok $thing
 
     Passes if $thing is not "anonymous".
 
@@ -126,6 +126,21 @@ TEST_FUNCTIONS
     $thing can be the name of a role or class, an object instance, or a
     metaclass.
 
+    The attributes list specified here is in the form of a list of names,
+    each optionally followed by a hashref of options to test the attribute
+    for; this hashref takes the same arguments "validate_attribute" does.
+    e.g.:
+
+        validate_thing $thing => (
+    
+            attributes => [
+                'foo',
+                'bar',
+                baz => { is => 'ro', ... },
+                'bip',
+            ],
+        );
+
  validate_role
 
     The same as validate_thing(), but ensures $thing is a role, and allows
@@ -136,11 +151,29 @@ TEST_FUNCTIONS
             required_methods => [ ... ],
     
             # ...and all other options from validate_thing()
+        );
 
  validate_class
 
     The same as validate_thing(), but ensures $thing is a class, and allows
     for additional class-specific tests.
+
+        validate_thing $thing => (
+    
+            isa  => [ ... ],
+    
+            attributes => [ ... ],
+            methods    => [ ... ],
+            isa        => [ ... ],
+    
+            # ensures $thing does these roles
+            does       => [ ... ],
+    
+            # ensures $thing does not do these roles
+            does_not   => [ ... ],
+    
+            # ...and all other options from validate_thing()
+        );
 
  validate_attribute
 
@@ -161,8 +194,12 @@ TEST_FUNCTIONS
     way you expect:
 
         validate_attribute TestClass => foo => (
+    
+            # tests the attribute metaclass instance to ensure it does the roles
             -does => [ 'TestRole' ],
+            # tests the attribute metaclass instance's inheritance
             -isa  => [ 'Moose::Meta::Attribute' ], # for demonstration's sake
+    
             traits   => [ 'TestRole' ],
             isa      => 'Int',
             does     => 'Bar',
@@ -174,6 +211,12 @@ TEST_FUNCTIONS
             lazy     => 1,
             required => undef,
         );
+
+    Options passed to validate_attribute() prefixed with '-' test the
+    attribute's metaclass instance rather than a setting on the attribute;
+    that is, '-does' ensures that the metaclass does a particular role
+    (e.g. MooseX::AttributeShortcuts), while 'does' tests the setting of
+    the attribute to require the value do a given role.
 
     Not yet documented or tested exhaustively; please see
     t/validate_attribute.t for details at the moment. This test routine is
