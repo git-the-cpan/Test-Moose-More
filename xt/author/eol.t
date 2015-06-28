@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-# this test was generated with Dist::Zilla::Plugin::Test::EOL 0.17
+# this test was generated with Dist::Zilla::Plugin::Test::EOL 0.18
 
 use Test::More 0.88;
 use Test::EOL;
@@ -27,7 +27,8 @@ my @files = (
     't/validate_attribute.t',
     't/validate_attribute/in_roles.t',
     't/validate_class.t',
-    't/validate_role.t'
+    't/validate_role.t',
+    't/wrapped/in_roles.t'
 );
 
 eol_unix_ok($_, { trailing_whitespace => 1 }) foreach @files;

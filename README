@@ -4,8 +4,8 @@ NAME
 
 VERSION
 
-    This document describes version 0.029 of Test::Moose::More - released
-    March 29, 2015 as part of Test-Moose-More.
+    This document describes version 0.030 of Test::Moose::More - released
+    June 28, 2015 as part of Test-Moose-More.
 
 SYNOPSIS
 
@@ -64,6 +64,21 @@ TEST_FUNCTIONS
 
     Queries $thing's metaclass to see if $thing has the methods named in
     @methods.
+
+ role_wraps_around_method_ok $role, @methods
+
+    Queries $role's metaclass to see if $role wraps the methods named in
+    @methods with an around method modifier.
+
+ role_wraps_before_method_ok $role, @methods
+
+    Queries $role's metaclass to see if $role wraps the methods named in
+    @methods with an before method modifier.
+
+ role_wraps_after_method_ok $role, @methods
+
+    Queries $role's metaclass to see if $role wraps the methods named in
+    @methods with an after method modifier.
 
  requires_method_ok $thing, @methods
 
@@ -158,7 +173,7 @@ TEST_FUNCTIONS
     The same as validate_thing(), but ensures $thing is a class, and allows
     for additional class-specific tests.
 
-        validate_thing $thing => (
+        validate_class $thing => (
     
             isa  => [ ... ],
     
@@ -240,12 +255,6 @@ SEE ALSO
 
       * Test::Moose
 
-SOURCE
-
-    The development version is on github at
-    http://https://github.com/RsrchBoy/Test-Moose-More and may be cloned
-    from git://https://github.com/RsrchBoy/Test-Moose-More.git
-
 BUGS
 
     Please report any bugs or feature requests on the bugtracker website
@@ -265,10 +274,11 @@ AUTHOR
     release works like this because I need them or I find it enjoyable;
     however, don't let that stop you if you feel like it ;)
 
-    Flattr this
+    Flattr
     <https://flattr.com/submit/auto?user_id=RsrchBoy&url=https%3A%2F%2Fgithub.com%2FRsrchBoy%2FTest-Moose-More&title=RsrchBoy's%20CPAN%20Test-Moose-More&tags=%22RsrchBoy's%20Test-Moose-More%20in%20the%20CPAN%22>,
-    gittip me <https://www.gittip.com/RsrchBoy/>, or indulge my Amazon
-    Wishlist <http://bit.ly/rsrchboys-wishlist>... If you so desire.
+    Gratipay <https://gratipay.com/RsrchBoy/>, or indulge my Amazon
+    Wishlist <http://bit.ly/rsrchboys-wishlist>... If and *only* if you so
+    desire.
 
 CONTRIBUTORS
 

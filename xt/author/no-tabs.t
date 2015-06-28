@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-# this test was generated with Dist::Zilla::Plugin::Test::NoTabs 0.13
+# this test was generated with Dist::Zilla::Plugin::Test::NoTabs 0.15
 
 use Test::More 0.88;
 use Test::NoTabs;
@@ -27,7 +27,8 @@ my @files = (
     't/validate_attribute.t',
     't/validate_attribute/in_roles.t',
     't/validate_class.t',
-    't/validate_role.t'
+    't/validate_role.t',
+    't/wrapped/in_roles.t'
 );
 
 notabs_ok($_) foreach @files;

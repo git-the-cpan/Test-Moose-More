@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.028_01-0-g51bc5d4
-$Test::Moose::More::VERSION = '0.029';
+# git description: 0.029-6-gc9f19b1
+$Test::Moose::More::VERSION = '0.030';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -38,6 +38,10 @@ use Sub::Exporter::Progressive -setup => {
         validate_class
         validate_role
         with_immutable
+
+        role_wraps_around_method_ok
+        role_wraps_before_method_ok
+        role_wraps_after_method_ok
 
         is_anon
         is_class
@@ -155,6 +159,27 @@ sub has_method_ok {
 
     ### @methods
     $tb->ok(!!$meta->has_method($_), "$name has method $_")
+        for @methods;
+
+    return;
+}
+
+
+sub role_wraps_around_method_ok { unshift @_, 'around'; goto \&_role_wraps }
+sub role_wraps_before_method_ok { unshift @_, 'before'; goto \&_role_wraps }
+sub role_wraps_after_method_ok  { unshift @_, 'after';  goto \&_role_wraps }
+
+sub _role_wraps {
+    my ($style, $thing, @methods) = @_;
+
+    my $meta_method = "get_${style}_method_modifiers";
+
+    ### $thing
+    my $meta = find_meta($thing);
+    my $name = $meta->name;
+
+    ### @methods
+    $tb->ok(!!$meta->$meta_method($_), "$name wraps $style method $_")
         for @methods;
 
     return;
@@ -517,7 +542,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.029 of Test::Moose::More - released March 29, 2015 as part of Test-Moose-More.
+This document describes version 0.030 of Test::Moose::More - released June 28, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
@@ -572,6 +597,21 @@ class name, instance, or role name.
 =head2 has_method_ok $thing, @methods
 
 Queries $thing's metaclass to see if $thing has the methods named in @methods.
+
+=head2 role_wraps_around_method_ok $role, @methods
+
+Queries $role's metaclass to see if $role wraps the methods named in
+@methods with an around method modifier.
+
+=head2 role_wraps_before_method_ok $role, @methods
+
+Queries $role's metaclass to see if $role wraps the methods named in
+@methods with an before method modifier.
+
+=head2 role_wraps_after_method_ok $role, @methods
+
+Queries $role's metaclass to see if $role wraps the methods named in
+@methods with an after method modifier.
 
 =head2 requires_method_ok $thing, @methods
 
@@ -664,7 +704,7 @@ additional role-specific tests.
 The same as validate_thing(), but ensures C<$thing> is a class, and allows for
 additional class-specific tests.
 
-    validate_thing $thing => (
+    validate_class $thing => (
 
         isa  => [ ... ],
 
@@ -738,6 +778,8 @@ for details at the moment.  This test routine is likely to change in
 implementation and scope, with every effort to maintain backwards
 compatibility.
 
+=for Pod::Coverage is_anon is_class is_not_anon is_role
+
 =head1 SEE ALSO
 
 Please see those modules/websites for more information related to this module.
@@ -749,11 +791,6 @@ Please see those modules/websites for more information related to this module.
 L<Test::Moose>
 
 =back
-
-=head1 SOURCE
-
-The development version is on github at L<http://https://github.com/RsrchBoy/Test-Moose-More>
-and may be cloned from L<git://https://github.com/RsrchBoy/Test-Moose-More.git>
 
 =head1 BUGS
 
@@ -772,7 +809,7 @@ Chris Weyl <cweyl@alumni.drew.edu>
 
 =begin html
 
-<a href="https://www.gittip.com/RsrchBoy/"><img src="https://raw.githubusercontent.com/gittip/www.gittip.com/master/www/assets/%25version/logo.png" /></a>
+<a href="https://gratipay.com/RsrchBoy/"><img src="http://img.shields.io/gratipay/RsrchBoy.svg" /></a>
 <a href="http://bit.ly/rsrchboys-wishlist"><img src="http://wps.io/wp-content/uploads/2014/05/amazon_wishlist.resized.png" /></a>
 <a href="https://flattr.com/submit/auto?user_id=RsrchBoy&url=https%3A%2F%2Fgithub.com%2FRsrchBoy%2FTest-Moose-More&title=RsrchBoy's%20CPAN%20Test-Moose-More&tags=%22RsrchBoy's%20Test-Moose-More%20in%20the%20CPAN%22"><img src="http://api.flattr.com/button/flattr-badge-large.png" /></a>
 
@@ -783,9 +820,9 @@ rather B<it is simply a very pleasant surprise>. I largely create and release
 works like this because I need them or I find it enjoyable; however, don't let
 that stop you if you feel like it ;)
 
-L<Flattr this|https://flattr.com/submit/auto?user_id=RsrchBoy&url=https%3A%2F%2Fgithub.com%2FRsrchBoy%2FTest-Moose-More&title=RsrchBoy's%20CPAN%20Test-Moose-More&tags=%22RsrchBoy's%20Test-Moose-More%20in%20the%20CPAN%22>,
-L<gittip me|https://www.gittip.com/RsrchBoy/>, or indulge my
-L<Amazon Wishlist|http://bit.ly/rsrchboys-wishlist>...  If you so desire.
+L<Flattr|https://flattr.com/submit/auto?user_id=RsrchBoy&url=https%3A%2F%2Fgithub.com%2FRsrchBoy%2FTest-Moose-More&title=RsrchBoy's%20CPAN%20Test-Moose-More&tags=%22RsrchBoy's%20Test-Moose-More%20in%20the%20CPAN%22>,
+L<Gratipay|https://gratipay.com/RsrchBoy/>, or indulge my
+L<Amazon Wishlist|http://bit.ly/rsrchboys-wishlist>...  If and *only* if you so desire.
 
 =head1 CONTRIBUTORS
 
