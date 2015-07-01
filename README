@@ -4,8 +4,8 @@ NAME
 
 VERSION
 
-    This document describes version 0.030 of Test::Moose::More - released
-    June 28, 2015 as part of Test-Moose-More.
+    This document describes version 0.031 of Test::Moose::More - released
+    June 30, 2015 as part of Test-Moose-More.
 
 SYNOPSIS
 
@@ -131,6 +131,9 @@ TEST_FUNCTIONS
             methods    => [ ... ],
             isa        => [ ... ],
     
+            # ensures sugar is/is-not present
+            sugar      => 0,
+    
             # ensures $thing does these roles
             does       => [ ... ],
     
@@ -180,6 +183,9 @@ TEST_FUNCTIONS
             attributes => [ ... ],
             methods    => [ ... ],
             isa        => [ ... ],
+    
+            # ensures sugar is/is-not present
+            sugar      => 0,
     
             # ensures $thing does these roles
             does       => [ ... ],

@@ -23,6 +23,7 @@ parameterization
 subclasses
 coderef
 Gratipay
+codebase
 Chris
 Weyl
 cweyl

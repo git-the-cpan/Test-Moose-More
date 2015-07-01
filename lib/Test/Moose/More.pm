@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.029-6-gc9f19b1
-$Test::Moose::More::VERSION = '0.030';
+# git description: 0.030-5-g36f70ca
+$Test::Moose::More::VERSION = '0.031';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -37,6 +37,7 @@ use Sub::Exporter::Progressive -setup => {
         validate_attribute
         validate_class
         validate_role
+        validate_thing
         with_immutable
 
         role_wraps_around_method_ok
@@ -265,9 +266,9 @@ sub is_not_anon_ok {
 }
 
 
-sub known_sugar { qw{ has around augment inner before after blessed confess } }
+sub known_sugar() { qw{ has around augment inner before after blessed confess } }
 
-sub check_sugar_removed_ok {
+sub check_sugar_removed_ok($) {
     my $t = shift @_;
 
     # check some (not all) Moose sugar to make sure it has been cleared
@@ -277,7 +278,7 @@ sub check_sugar_removed_ok {
 }
 
 
-sub check_sugar_ok {
+sub check_sugar_ok($) {
     my $t = shift @_;
 
     # check some (not all) Moose sugar to make sure it has been cleared
@@ -296,6 +297,10 @@ sub validate_thing {
     ### anonymous...
     $args{anonymous} ? is_anon_ok $thing : is_not_anon_ok $thing
         if exists $args{anonymous};
+
+    ### sugar checking...
+    $args{sugar} ? check_sugar_ok $thing : check_sugar_removed_ok $thing
+        if exists $args{sugar};
 
     ### roles...
     do { does_ok($thing, $_) for @{$args{does}} }
@@ -542,7 +547,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.030 of Test::Moose::More - released June 28, 2015 as part of Test-Moose-More.
+This document describes version 0.031 of Test::Moose::More - released June 30, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
@@ -663,6 +668,9 @@ Runs a bunch of tests against the given C<$thing>, as defined:
         methods    => [ ... ],
         isa        => [ ... ],
 
+        # ensures sugar is/is-not present
+        sugar      => 0,
+
         # ensures $thing does these roles
         does       => [ ... ],
 
@@ -711,6 +719,9 @@ additional class-specific tests.
         attributes => [ ... ],
         methods    => [ ... ],
         isa        => [ ... ],
+
+        # ensures sugar is/is-not present
+        sugar      => 0,
 
         # ensures $thing does these roles
         does       => [ ... ],
