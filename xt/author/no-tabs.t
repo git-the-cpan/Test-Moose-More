@@ -27,7 +27,8 @@ my @files = (
     't/validate_attribute.t',
     't/validate_attribute/in_roles.t',
     't/validate_class.t',
-    't/validate_role.t',
+    't/validate_role/basic.t',
+    't/validate_role/compose.t',
     't/validate_thing/sugar.t',
     't/wrapped/in_roles.t'
 );

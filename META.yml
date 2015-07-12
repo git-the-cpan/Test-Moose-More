@@ -34,7 +34,7 @@ no_index:
 provides:
   Test::Moose::More:
     file: lib/Test/Moose/More.pm
-    version: '0.031'
+    version: '0.032'
 requires:
   Data::OptList: '0'
   Moose::Util: '0'
@@ -52,7 +52,7 @@ resources:
   bugtracker: https://github.com/RsrchBoy/Test-Moose-More/issues
   homepage: https://github.com/RsrchBoy/Test-Moose-More
   repository: https://github.com/RsrchBoy/Test-Moose-More.git
-version: '0.031'
+version: '0.032'
 x_Dist_Zilla:
   perl:
     version: '5.020001'
@@ -399,7 +399,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::Git::Tag:
           branch: ~
           signed: '1'
-          tag: '0.031'
+          tag: '0.032'
           tag_format: '%v'
           tag_message: v%v
           time_zone: local
@@ -554,15 +554,15 @@ x_Dist_Zilla:
             -
               class: Pod::Weaver::Section::RSRCHBOY::RoleParameters
               name: 'ROLE PARAMETERS'
-              version: '0.063'
+              version: '0.064'
             -
               class: Pod::Weaver::Section::RSRCHBOY::RequiredAttributes
               name: 'REQUIRED ATTRIBUTES'
-              version: '0.063'
+              version: '0.064'
             -
               class: Pod::Weaver::Section::RSRCHBOY::LazyAttributes
               name: 'LAZY ATTRIBUTES'
-              version: '0.063'
+              version: '0.064'
             -
               class: Pod::Weaver::Section::Collect
               name: 'REQUIRED METHODS'
@@ -610,7 +610,7 @@ x_Dist_Zilla:
             -
               class: Pod::Weaver::Section::RSRCHBOY::Authors
               name: RSRCHBOY::Authors
-              version: '0.063'
+              version: '0.064'
             -
               class: Pod::Weaver::Section::Contributors
               name: '@RSRCHBOY/Contributors'

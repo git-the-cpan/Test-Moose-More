@@ -28,7 +28,7 @@
       },
       "develop" : {
          "requires" : {
-            "Dist::Zilla::PluginBundle::RSRCHBOY" : "0.063",
+            "Dist::Zilla::PluginBundle::RSRCHBOY" : "0.064",
             "Pod::Coverage::TrustPod" : "0",
             "Test::EOL" : "0",
             "Test::More" : "0.88",
@@ -77,7 +77,7 @@
    "provides" : {
       "Test::Moose::More" : {
          "file" : "lib/Test/Moose/More.pm",
-         "version" : "0.031"
+         "version" : "0.032"
       }
    },
    "release_status" : "stable",
@@ -92,7 +92,7 @@
          "web" : "https://github.com/RsrchBoy/Test-Moose-More"
       }
    },
-   "version" : "0.031",
+   "version" : "0.032",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.020001"
@@ -542,7 +542,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : "1",
-                  "tag" : "0.031",
+                  "tag" : "0.032",
                   "tag_format" : "%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"
@@ -742,17 +742,17 @@
                      {
                         "class" : "Pod::Weaver::Section::RSRCHBOY::RoleParameters",
                         "name" : "ROLE PARAMETERS",
-                        "version" : "0.063"
+                        "version" : "0.064"
                      },
                      {
                         "class" : "Pod::Weaver::Section::RSRCHBOY::RequiredAttributes",
                         "name" : "REQUIRED ATTRIBUTES",
-                        "version" : "0.063"
+                        "version" : "0.064"
                      },
                      {
                         "class" : "Pod::Weaver::Section::RSRCHBOY::LazyAttributes",
                         "name" : "LAZY ATTRIBUTES",
-                        "version" : "0.063"
+                        "version" : "0.064"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Collect",
@@ -812,7 +812,7 @@
                      {
                         "class" : "Pod::Weaver::Section::RSRCHBOY::Authors",
                         "name" : "RSRCHBOY::Authors",
-                        "version" : "0.063"
+                        "version" : "0.064"
                      },
                      {
                         "class" : "Pod::Weaver::Section::Contributors",

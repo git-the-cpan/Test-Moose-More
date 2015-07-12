@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.030-5-g36f70ca
-$Test::Moose::More::VERSION = '0.031';
+# git description: 0.031-18-g6b3000b
+$Test::Moose::More::VERSION = '0.032';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -57,7 +57,7 @@ use Test::More;
 use Test::Moose 'with_immutable';
 use Scalar::Util 'blessed';
 use Syntax::Keyword::Junction 'any';
-use Moose::Util 'does_role', 'find_meta';
+use Moose::Util 'resolve_metatrait_alias', 'does_role', 'find_meta';
 use Moose::Util::TypeConstraints;
 use Data::OptList;
 
@@ -359,12 +359,34 @@ sub validate_role {
     my ($role, %args) = @_;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
-    return unless is_role_ok $role;
 
+    # basic role validation
+    return unless is_role_ok $role;
     requires_method_ok($role => @{ $args{required_methods} })
         if defined $args{required_methods};
+    $args{-compose}
+        ?        validate_thing $role => %args
+        : return validate_thing $role => %args
+        ;
 
-    return validate_thing $role => %args;
+    # compose it and validate that class.
+    my $anon = Moose::Meta::Class->create_anon_class(
+        roles => [$role],
+        methods => { map { $_ => sub {} } @{ $args{required_methods} || [] } },
+    );
+
+    # take anything in required_methods and put it in methods for this test
+    $args{methods}
+        = defined $args{methods}
+        ? [ @{$args{methods}}, @{$args{required_methods} || []} ]
+        : [ @{$args{required_methods}                    || []} ]
+        ;
+    delete $args{required_methods};
+
+    # aaaand a subtest wrapper to make it easier to read...
+    return $tb->subtest('role composed into ' . $anon->name
+        => sub { validate_class $anon->name => %args },
+    );
 }
 
 
@@ -389,6 +411,9 @@ sub _validate_attribute {
         grep { /^-/                      }
         sort keys %opts
         ;
+
+    $thing_opts{does} = [ map { resolve_metatrait_alias(Attribute => $_) } @{$thing_opts{does}} ]
+        if $thing_opts{does};
 
     ### %thing_opts
     validate_class $att => %thing_opts
@@ -547,7 +572,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.031 of Test::Moose::More - released June 30, 2015 as part of Test-Moose-More.
+This document describes version 0.032 of Test::Moose::More - released July 11, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
@@ -681,6 +706,36 @@ Runs a bunch of tests against the given C<$thing>, as defined:
 C<$thing> can be the name of a role or class, an object instance, or a
 metaclass.
 
+=over 4
+
+=item *
+
+isa => [ ... ]
+
+A list of superclasses thing should have.
+
+=item *
+
+anonymous => 0|1
+
+Check to see if the class is/isn't anonymous.
+
+=item *
+
+does => [ ... ]
+
+A list of roles the thing should do.
+
+=item *
+
+does_not => [ ... ]
+
+A list of roles the thing should not do.
+
+=item *
+
+attributes => [ ... ]
+
 The attributes list specified here is in the form of a list of names, each optionally
 followed by a hashref of options to test the attribute for; this hashref takes the
 same arguments L</validate_attribute> does.  e.g.:
@@ -695,6 +750,20 @@ same arguments L</validate_attribute> does.  e.g.:
         ],
     );
 
+=item *
+
+methods => [ ... ]
+
+A list of methods the thing should have.
+
+=item *
+
+sugar => 0|1
+
+Ensure that thing can/cannot do the standard Moose sugar.
+
+=back
+
 =head2 validate_role
 
 The same as validate_thing(), but ensures C<$thing> is a role, and allows for
@@ -706,6 +775,47 @@ additional role-specific tests.
 
         # ...and all other options from validate_thing()
     );
+
+=over 4
+
+=item *
+
+-compose => 0|1
+
+When true, attempt to compose the role into an anonymous class, then use it to
+run L</validate_class>.  The options we're given are passed to validate_class()
+directly, except that any C<required_methods> entry is removed and its contents
+pushed onto C<methods>.  (A stub method for each entry in C<required_methods>
+will also be created in the new class.)
+
+e.g.:
+
+    ok 1 - TestRole has a metaclass
+    ok 2 - TestRole is a Moose role
+    ok 3 - TestRole requires method blargh
+    ok 4 - TestRole does TestRole
+    ok 5 - TestRole does not do TestRole::Two
+    ok 6 - TestRole has method method1
+    ok 7 - TestRole has an attribute named bar
+        # Subtest: role composed into Moose::Meta::Class::__ANON__::SERIAL::1
+        ok 1 - Moose::Meta::Class::__ANON__::SERIAL::1 has a metaclass
+        ok 2 - Moose::Meta::Class::__ANON__::SERIAL::1 is a Moose class
+        ok 3 - Moose::Meta::Class::__ANON__::SERIAL::1 does TestRole
+        ok 4 - Moose::Meta::Class::__ANON__::SERIAL::1 does not do TestRole::Two
+        ok 5 - Moose::Meta::Class::__ANON__::SERIAL::1 has method method1
+        ok 6 - Moose::Meta::Class::__ANON__::SERIAL::1 has method blargh
+        ok 7 - Moose::Meta::Class::__ANON__::SERIAL::1 has an attribute named bar
+        1..7
+    ok 8 - role composed into Moose::Meta::Class::__ANON__::SERIAL::1
+    1..8
+
+=item *
+
+required_methods => [ ... ]
+
+A list of methods the role requires a consuming class to supply.
+
+=back
 
 =head2 validate_class
 
@@ -731,6 +841,16 @@ additional class-specific tests.
 
         # ...and all other options from validate_thing()
     );
+
+=over 4
+
+=item *
+
+immutable => 0|1
+
+Checks the class to see if it is/isn't immutable.
+
+=back
 
 =head2 validate_attribute
 
@@ -774,20 +894,10 @@ instance rather than a setting on the attribute; that is, '-does' ensures that t
 metaclass does a particular role (e.g. L<MooseX::AttributeShortcuts>), while 'does' tests
 the setting of the attribute to require the value do a given role.
 
-Not yet documented or tested exhaustively; please see t/validate_attribute.t
-for details at the moment.  This test routine is likely to change in
-implementation and scope, with every effort to maintain backwards
-compatibility.
-
 =head2 attribute_options_ok
 
 Validates that an attribute is set up as expected; like validate_attribute(),
 but only concerns itself with attribute options.
-
-Not yet documented or tested exhaustively; please see t/validate_attribute.t
-for details at the moment.  This test routine is likely to change in
-implementation and scope, with every effort to maintain backwards
-compatibility.
 
 =for Pod::Coverage is_anon is_class is_not_anon is_role
 
