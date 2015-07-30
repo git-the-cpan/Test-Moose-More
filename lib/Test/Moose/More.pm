@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.031-18-g6b3000b
-$Test::Moose::More::VERSION = '0.032';
+# git description: 0.032-4-gb24c8bf
+$Test::Moose::More::VERSION = '0.033';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -382,6 +382,8 @@ sub validate_role {
         : [ @{$args{required_methods}                    || []} ]
         ;
     delete $args{required_methods};
+    # and add a test for the role we're actually testing...
+    $args{does} = [ $role, @{ $args{does} || [] } ];
 
     # aaaand a subtest wrapper to make it easier to read...
     return $tb->subtest('role composed into ' . $anon->name
@@ -572,7 +574,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.032 of Test::Moose::More - released July 11, 2015 as part of Test-Moose-More.
+This document describes version 0.033 of Test::Moose::More - released July 29, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
@@ -596,7 +598,7 @@ tests, and re-exports any tests that it has and we do not, yet.
 
 Returns a list of all the known standard Moose sugar (has, extends, etc).
 
-=head1 TEST_FUNCTIONS
+=head1 TEST FUNCTIONS
 
 =head2 meta_ok $thing
 
@@ -898,6 +900,60 @@ the setting of the attribute to require the value do a given role.
 
 Validates that an attribute is set up as expected; like validate_attribute(),
 but only concerns itself with attribute options.
+
+Note that some of these options will skip if used against attributes defined in a role.
+
+=over 4
+
+=item *
+
+is => ro|rw
+
+Tests for reader/writer options set as one would expect.
+
+=item *
+
+isa => ...
+
+Validates that the attribute requires its value to be a given type.
+
+=item *
+
+does => ...
+
+Validates that the attribute requires its value to do a given role.
+
+=item *
+
+builder => '...'
+
+Validates that the attribute expects the method name given to be its builder.
+
+=item *
+
+default => ...
+
+Validates that the attribute has the given default.
+
+=item *
+
+init_arg => '...'
+
+Validates that the attribute has the given initial argument name.
+
+=item *
+
+lazy => 0|1
+
+Validates that the attribute is/isn't lazy.
+
+=item *
+
+required => 0|1
+
+Validates that setting the attribute's value is/isn't required.
+
+=back
 
 =for Pod::Coverage is_anon is_class is_not_anon is_role
 
