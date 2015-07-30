@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.032-4-gb24c8bf
-$Test::Moose::More::VERSION = '0.033';
+# git description: 0.033-12-g97b012c
+$Test::Moose::More::VERSION = '0.034'; # TRIAL
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -289,7 +289,25 @@ sub check_sugar_ok($) {
 
 
 
-sub validate_thing {
+sub validate_thing { _validate_subtest_wrapper(\&_validate_thing_guts, @_) }
+sub validate_class { _validate_subtest_wrapper(\&_validate_class_guts, @_) }
+sub validate_role  { _validate_subtest_wrapper(\&_validate_role_guts,  @_) }
+
+sub _validate_subtest_wrapper {
+    my ($func, $thing, %args) = @_;
+
+    # note incrementing by 2 because of our upper curried function
+    local $Test::Builder::Level = $Test::Builder::Level + 2;
+
+    # run tests w/o a subtest wrapper...
+    return $func->($thing => %args)
+        unless $args{-subtest};
+
+    # ...or with one.
+    return $tb->subtest(delete $args{-subtest} => sub { $func->($thing => %args) });
+}
+
+sub _validate_thing_guts {
     my ($thing, %args) = @_;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
@@ -326,9 +344,10 @@ sub validate_thing {
                     if (find_meta($thing)->isa('Moose::Meta::Role'));
 
                 local $THING_NAME = "${thing}'s attribute $name";
-                $tb->subtest("checking $THING_NAME" => sub {
-                    _validate_attribute($att, %$opts);
-                });
+                _validate_attribute($att => (
+                    -subtest => "checking $THING_NAME",
+                    %$opts,
+                ));
             }
         }
     }
@@ -336,7 +355,7 @@ sub validate_thing {
     return;
 }
 
-sub validate_class {
+sub _validate_class_guts {
     my ($class, %args) = @_;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
@@ -355,7 +374,11 @@ sub validate_class {
     return validate_thing $class => %args;
 }
 
-sub validate_role {
+# _validate_role_guts() is where the main logic of validate_role() lives;
+# we're broken out here so as to allow it all to be easily wrapped -- or not
+# -- in a subtest.
+
+sub _validate_role_guts {
     my ($role, %args) = @_;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
@@ -386,15 +409,19 @@ sub validate_role {
     $args{does} = [ $role, @{ $args{does} || [] } ];
 
     # aaaand a subtest wrapper to make it easier to read...
-    return $tb->subtest('role composed into ' . $anon->name
-        => sub { validate_class $anon->name => %args },
+    return validate_class $anon->name => (
+        -subtest => 'role composed into ' . $anon->name,
+        %args,
     );
 }
 
 
+sub _validate_attribute { _validate_subtest_wrapper(\&__validate_attribute_guts,                 @_) }
+sub validate_attribute  { _validate_subtest_wrapper( \&_validate_attribute_guts, [shift, shift], @_) }
 
-sub validate_attribute {
-    my ($thing, $name, %opts) = @_;
+sub _validate_attribute_guts {
+    my ($thingname, %opts) = @_;
+    my ($thing, $name) = @$thingname;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
     return unless has_attribute_ok($thing, $name);
@@ -403,7 +430,7 @@ sub validate_attribute {
     return _validate_attribute($att, %opts);
 }
 
-sub _validate_attribute {
+sub __validate_attribute_guts {
     my ($att, %opts) = @_;
 
     local $Test::Builder::Level = $Test::Builder::Level + 1;
@@ -564,7 +591,7 @@ __END__
 
 =encoding UTF-8
 
-=for :stopwords Chris Weyl Chad Etheridge Granum Karen
+=for :stopwords Chris Weyl Chad Etheridge Granum Karen subtest
 
 =for :stopwords Wishlist flattr flattr'ed gittip gittip'ed
 
@@ -574,7 +601,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.033 of Test::Moose::More - released July 29, 2015 as part of Test-Moose-More.
+This document describes version 0.034 of Test::Moose::More - released July 29, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
@@ -712,6 +739,13 @@ metaclass.
 
 =item *
 
+-subtest => 'subtest name...'
+
+If set, all tests run will be wrapped in a subtest, the name of which will be
+whatever C<-subtest> is set to.
+
+=item *
+
 isa => [ ... ]
 
 A list of superclasses thing should have.
@@ -813,6 +847,13 @@ e.g.:
 
 =item *
 
+-subtest => 'subtest name...'
+
+If set, all tests run will be wrapped in a subtest, the name of which will be
+whatever C<-subtest> is set to.
+
+=item *
+
 required_methods => [ ... ]
 
 A list of methods the role requires a consuming class to supply.
@@ -845,6 +886,13 @@ additional class-specific tests.
     );
 
 =over 4
+
+=item *
+
+-subtest => 'subtest name...'
+
+If set, all tests run will be wrapped in a subtest, the name of which will be
+whatever C<-subtest> is set to.
 
 =item *
 
@@ -895,6 +943,20 @@ Options passed to validate_attribute() prefixed with '-' test the attribute's me
 instance rather than a setting on the attribute; that is, '-does' ensures that the
 metaclass does a particular role (e.g. L<MooseX::AttributeShortcuts>), while 'does' tests
 the setting of the attribute to require the value do a given role.
+
+This function takes all the options L</attribute_options_ok> takes, as well as
+the following:
+
+=over 4
+
+=item *
+
+-subtest => 'subtest name...'
+
+If set, all tests run will be wrapped in a subtest, the name of which will be
+whatever C<-subtest> is set to.
+
+=back
 
 =head2 attribute_options_ok
 
