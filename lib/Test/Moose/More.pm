@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.033-12-g97b012c
-$Test::Moose::More::VERSION = '0.034'; # TRIAL
+# git description: 0.034-2-g96f4433
+$Test::Moose::More::VERSION = '0.035';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -385,8 +385,17 @@ sub _validate_role_guts {
 
     # basic role validation
     return unless is_role_ok $role;
+
     requires_method_ok($role => @{ $args{required_methods} })
         if defined $args{required_methods};
+
+    role_wraps_before_method_ok($role => @{ $args{before} })
+        if defined $args{before};
+    role_wraps_around_method_ok($role => @{ $args{around} })
+        if defined $args{around};
+    role_wraps_after_method_ok($role => @{ $args{after} })
+        if defined $args{after};
+
     $args{-compose}
         ?        validate_thing $role => %args
         : return validate_thing $role => %args
@@ -601,7 +610,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.034 of Test::Moose::More - released July 29, 2015 as part of Test-Moose-More.
+This document describes version 0.035 of Test::Moose::More - released August 26, 2015 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 
@@ -857,6 +866,30 @@ whatever C<-subtest> is set to.
 required_methods => [ ... ]
 
 A list of methods the role requires a consuming class to supply.
+
+=item *
+
+before => [ ... ]
+
+A list of methods the role expects to wrap before, on application to a class.
+
+See L<Moose/before> for information on before method modifiers.
+
+=item *
+
+around => [ ... ]
+
+A list of methods the role expects to wrap around, on application to a class.
+
+See L<Moose/around> for information on around method modifiers.
+
+=item *
+
+after => [ ... ]
+
+A list of methods the role expects to wrap after, on application to a class.
+
+See L<Moose/after> for information on after method modifiers.
 
 =back
 
