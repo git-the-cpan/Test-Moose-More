@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.034-2-g96f4433
-$Test::Moose::More::VERSION = '0.035';
+# git description: 0.035-4-g75693a2
+$Test::Moose::More::VERSION = '0.036'; # TRIAL
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -143,10 +143,7 @@ sub _find_attribute {
 sub has_attribute_ok ($$;$) {
     my ($thing, $attr_name, $message) = @_;
 
-    my $meta       = find_meta($thing);
-    my $thing_name = $meta->name;
-    $message     ||= "$thing_name has an attribute named $attr_name";
-
+    $message ||= _thing_name($thing) . " has an attribute named $attr_name";
     return $tb->ok(!!_find_attribute($thing => $attr_name), $message);
 }
 
@@ -202,24 +199,24 @@ sub requires_method_ok {
 }
 
 
-sub is_immutable_ok {
-    my ($thing) = @_;
+sub is_immutable_ok($;$) {
+    my ($thing, $message) = @_;
 
     ### $thing
     my $meta = find_meta($thing);
-    my $name = $meta->name;
 
-    return $tb->ok($meta->is_immutable, "$name is immutable");
+    $message ||= _thing_name($thing, $meta) . ' is immutable';
+    return $tb->ok($meta->is_immutable, $message);
 }
 
-sub is_not_immutable_ok {
-    my ($thing) = @_;
+sub is_not_immutable_ok($;$) {
+    my ($thing, $message) = @_;
 
     ### $thing
     my $meta = find_meta($thing);
-    my $name = $meta->name;
 
-    return $tb->ok(!$meta->is_immutable, "$name is not immutable");
+    $message ||= _thing_name($thing, $meta) . ' is not immutable';
+    return $tb->ok(!$meta->is_immutable, $message);
 }
 
 
@@ -233,7 +230,7 @@ sub is_class_ok { unshift @_, 'Class'; goto \&_is_moosey_ok }
 sub _is_moosey_ok {
     my ($type, $thing) =  @_;
 
-    my $thing_name = ref $thing || $thing;
+    my $thing_name = _thing_name($thing);
 
     my $meta = find_meta($thing);
     $tb->ok(!!$meta, "$thing_name has a metaclass");
@@ -343,7 +340,7 @@ sub _validate_thing_guts {
                 skip 'Cannot examine attribute metaclass in roles', 1
                     if (find_meta($thing)->isa('Moose::Meta::Role'));
 
-                local $THING_NAME = "${thing}'s attribute $name";
+                local $THING_NAME = _thing_name($thing) . "'s attribute $name";
                 _validate_attribute($att => (
                     -subtest => "checking $THING_NAME",
                     %$opts,
@@ -610,7 +607,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.035 of Test::Moose::More - released August 26, 2015 as part of Test-Moose-More.
+This document describes version 0.036 of Test::Moose::More - released January 20, 2016 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 

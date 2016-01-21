@@ -52,6 +52,7 @@ do { my $x = {
                                    'Test::CheckDeps' => '0.010',
                                    'Test::More' => '0.94',
                                    'aliased' => '0',
+                                   'blib' => '1.01',
                                    'constant' => '0',
                                    'namespace::autoclean' => '0',
                                    'perl' => '5.006'
