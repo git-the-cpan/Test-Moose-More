@@ -55,7 +55,7 @@ my %WriteMakefileArgs = (
     "constant" => 0,
     "namespace::autoclean" => 0
   },
-  "VERSION" => "0.036",
+  "VERSION" => "0.037",
   "test" => {
     "TESTS" => "t/*.t t/attribute/*.t t/validate_attribute/*.t t/validate_role/*.t t/validate_thing/*.t t/wrapped/*.t"
   }

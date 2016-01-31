@@ -9,8 +9,8 @@
 #
 package Test::Moose::More;
 our $AUTHORITY = 'cpan:RSRCHBOY';
-# git description: 0.035-4-g75693a2
-$Test::Moose::More::VERSION = '0.036'; # TRIAL
+# git description: 0.036-0-gd30d56e
+$Test::Moose::More::VERSION = '0.037';
 
 # ABSTRACT: More tools for testing Moose packages
 
@@ -607,7 +607,7 @@ Test::Moose::More - More tools for testing Moose packages
 
 =head1 VERSION
 
-This document describes version 0.036 of Test::Moose::More - released January 20, 2016 as part of Test-Moose-More.
+This document describes version 0.037 of Test::Moose::More - released January 31, 2016 as part of Test-Moose-More.
 
 =head1 SYNOPSIS
 

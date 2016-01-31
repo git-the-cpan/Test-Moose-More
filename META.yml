@@ -36,7 +36,7 @@ no_index:
 provides:
   Test::Moose::More:
     file: lib/Test/Moose/More.pm
-    version: '0.036'
+    version: '0.037'
 requires:
   Data::OptList: '0'
   Moose::Util: '0'
@@ -54,7 +54,7 @@ resources:
   bugtracker: https://github.com/RsrchBoy/Test-Moose-More/issues
   homepage: https://github.com/RsrchBoy/Test-Moose-More
   repository: https://github.com/RsrchBoy/Test-Moose-More.git
-version: '0.036'
+version: '0.037'
 x_Dist_Zilla:
   perl:
     version: '5.020001'
@@ -318,6 +318,7 @@ x_Dist_Zilla:
               name: '@RSRCHBOY/MetaProvides::Package/AUTOVIV/:InstallModulesPM'
               version: '5.043'
         Dist::Zilla::Role::MetaProvider::Provider:
+          Dist::Zilla::Role::MetaProvider::Provider::VERSION: '2.001011'
           inherit_missing: '1'
           inherit_version: '1'
           meta_noindex: '1'
@@ -432,7 +433,7 @@ x_Dist_Zilla:
           branch: ~
           changelog: Changes
           signed: 1
-          tag: '0.036'
+          tag: '0.037'
           tag_format: '%v'
           tag_message: v%v
         Dist::Zilla::Role::Git::Repo:
@@ -503,7 +504,7 @@ x_Dist_Zilla:
         Dist::Zilla::Plugin::GitHub::Update:
           metacpan: 1
       name: '@RSRCHBOY/GitHub::Update'
-      version: '0.41'
+      version: '0.42'
     -
       class: Dist::Zilla::Plugin::ArchiveRelease
       name: '@RSRCHBOY/ArchiveRelease'
@@ -733,7 +734,7 @@ x_Dist_Zilla:
   zilla:
     class: Dist::Zilla::Dist::Builder
     config:
-      is_trial: '1'
+      is_trial: '0'
     version: '5.043'
 x_authority: cpan:RSRCHBOY
 x_contributors:
